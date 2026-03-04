@@ -26,10 +26,16 @@ import org.springframework.web.bind.annotation.RestController
 class UserController(
     private val masterUserService: MasterUserService
 ) {
-  @PostMapping("/register")
-  fun register(
+
+    @GetMapping("/hello-world")
+    fun helloWorld(): ResponseEntity<BaseResponse<String>> {
+        return ResponseEntity.ok(BaseResponse("Hello World"))
+    }
+
+    @PostMapping("/register")
+    fun register(
       @Valid @RequestBody req: ReqCreateUserDto
-  ): ResponseEntity<BaseResponse<ResCreateUserDto>>{
+    ): ResponseEntity<BaseResponse<ResCreateUserDto>>{
       return ResponseEntity(
           BaseResponse(
               message = "Success",
@@ -37,7 +43,7 @@ class UserController(
           ),
           HttpStatus.CREATED
       )
-  }
+    }
 
     @PutMapping("/{userId}")
     fun updateUser(
