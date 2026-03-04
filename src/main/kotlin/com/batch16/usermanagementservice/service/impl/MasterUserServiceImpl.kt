@@ -13,12 +13,14 @@ import com.batch16.usermanagementservice.repository.MasterRoleRepository
 import com.batch16.usermanagementservice.repository.MasterUserRepository
 import com.batch16.usermanagementservice.service.MasterUserService
 import org.slf4j.LoggerFactory
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
 class MasterUserServiceImpl(
     private val masterUserRepository: MasterUserRepository,
-    private val masterRoleRepository: MasterRoleRepository
+    private val masterRoleRepository: MasterRoleRepository,
+    private val passwordEncoder: PasswordEncoder,
 ): MasterUserService {
     val log = LoggerFactory.getLogger(MasterUserServiceImpl::class.java)
     override fun register(req: ReqCreateUserDto): ResCreateUserDto {
@@ -37,10 +39,12 @@ class MasterUserServiceImpl(
         val userRole = masterRoleRepository.findRoleByName("user").orElseThrow {
             throw RuntimeException("Role user not found")
         }
+
+        val hashed = passwordEncoder.encode(req.password)
         val userEntity = MasterUserEntity( //lokal variabel springboot
             fullName = req.fullName,
             email = req.email,
-            password = req.password,
+            password = hashed,
             age = req.age,
             role = userRole //assign role
         )
