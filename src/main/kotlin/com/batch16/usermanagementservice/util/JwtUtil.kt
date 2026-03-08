@@ -17,7 +17,9 @@ class JwtUtil(
             roleName: String?
     ): String {
         // Menentukan waktu expired token
-        val exp = Date(System.currentTimeMillis() + expiredIn.toLong())
+        val exp = Date.from(
+            java.time.Instant.now().plusSeconds(expiredIn.toLong())
+        )
         // Meng-enkripsi secret-key
         val signingKey = Keys.hmacShaKeyFor(jwtSecreteKey.toByteArray())
         val token = Jwts.builder()  // Mulai membentuk token

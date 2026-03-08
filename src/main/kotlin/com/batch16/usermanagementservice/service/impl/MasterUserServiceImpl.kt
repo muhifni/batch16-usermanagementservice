@@ -13,6 +13,7 @@ import com.batch16.usermanagementservice.repository.MasterRoleRepository
 import com.batch16.usermanagementservice.repository.MasterUserRepository
 import com.batch16.usermanagementservice.service.MasterUserService
 import org.slf4j.LoggerFactory
+import org.springframework.cache.annotation.CacheEvict
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -57,6 +58,8 @@ class MasterUserServiceImpl(
         )
     }
 
+    //MENGHAPUS DATA REDIS getUserById::userId
+    @CacheEvict("getUserById", key = "#userId")
     override fun updateUser(req: ReqUpdateUserDto, userId: Int): ResGetUserDto {
         //GET USER BY ID
         val user = masterUserRepository.findById(userId).orElseThrow {
