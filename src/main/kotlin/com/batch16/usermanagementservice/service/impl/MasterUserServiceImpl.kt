@@ -1,5 +1,6 @@
 package com.batch16.usermanagementservice.service.impl
 
+import com.batch16.usermanagementservice.domain.ConstantVariables
 import com.batch16.usermanagementservice.domain.dto.req.ReqCreateUserDto
 import com.batch16.usermanagementservice.domain.dto.req.ReqUpdateUserDto
 import com.batch16.usermanagementservice.domain.dto.res.ResCreateUserDto
@@ -9,6 +10,7 @@ import com.batch16.usermanagementservice.domain.dto.res.ResUserIdDto
 import com.batch16.usermanagementservice.domain.entity.MasterUserEntity
 import com.batch16.usermanagementservice.exception.BadRequestException
 import com.batch16.usermanagementservice.exception.DataNotFoundException
+import com.batch16.usermanagementservice.producer.KafkaProducer
 import com.batch16.usermanagementservice.repository.MasterRoleRepository
 import com.batch16.usermanagementservice.repository.MasterUserRepository
 import com.batch16.usermanagementservice.service.MasterUserService
@@ -22,6 +24,7 @@ class MasterUserServiceImpl(
     private val masterUserRepository: MasterUserRepository,
     private val masterRoleRepository: MasterRoleRepository,
     private val passwordEncoder: PasswordEncoder,
+    private val kafkaProducer: KafkaProducer<Any>,
 ): MasterUserService {
     val log = LoggerFactory.getLogger(MasterUserServiceImpl::class.java)
     override fun register(req: ReqCreateUserDto): ResCreateUserDto {
@@ -95,6 +98,8 @@ class MasterUserServiceImpl(
         user.isDelete = true
         //save updated data user di db
         masterUserRepository.save(user)
+        //send message to Kafka
+        kafkaProducer.sendMessage("BATCH16_DELETE_USER_PRODUCT", user.id!!.toString())
         //return
         return ResUserIdDto(userId)
     }

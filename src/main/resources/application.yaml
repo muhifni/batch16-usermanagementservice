@@ -16,9 +16,9 @@ spring:
     name: usermanagementservice
   datasource: #CONFIG POSTGRES CONNECTION
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/user_management_batch_16
+    url: jdbc:postgresql://localhost:5432/batch16_user_management
     username: postgres
-    password: dimas
+    password: admin
   jpa:
     hibernate:
       ddl-auto: update
@@ -26,6 +26,9 @@ spring:
       hibernate:
         format_sql: true #ngerapiin query sql di console
         show_sql: true #munculin query sql di console
+
+kafka:
+  bootstrap-servers: localhost:9092
 
 #Ketika aplikasi nyala, report alamat ke http://localhost:8761/eureka/
 eureka:
