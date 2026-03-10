@@ -21,6 +21,10 @@ spring:
     url: jdbc:postgresql://158.178.246.204:3006/batch16_user_management
     username: postgres
     password: EzeX24QUrUpUU3MabkzocHHRcIZ8cxiaDbbftRI5JQgiF4dPLGoDjyPQp9wK7mCT
+    hikari:
+      maximum-pool-size: 5
+      idle-timeout: 30000
+      max-lifetime: 60000
   jpa:
     hibernate:
       ddl-auto: update
@@ -40,5 +44,5 @@ eureka:
   instance:
     prefer-ip-address: true
 jwt:
-  secret-key: ajhjsdghjasdgjhasgdhjqyuqetyqwvdmnasvdghjf
-  expired-in: 900 # 900s atau 15 menit
+  secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+  expired-in: 1800 # 900s atau 15 menit

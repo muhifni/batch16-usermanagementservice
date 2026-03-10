@@ -23,7 +23,15 @@ data class ReqCreateUserDto(
     val password: String?,
 
     @field:NotBlank(message = "fullName is required")
+    @field:Pattern(
+        regexp = "^[A-Za-z]+(?: [A-Za-z]+){0,49}\$",
+        message = "Full name must be 3–50 characters long and contain only letters and spaces."
+    )
     val fullName: String?,
 
+    @field:Pattern(
+        regexp = "^(?:1[01][0-9]|120|[1-9][0-9]?)\$",
+        message = "Age must be a number between 1 and 120."
+    )
     val age: Int? //optional
 )

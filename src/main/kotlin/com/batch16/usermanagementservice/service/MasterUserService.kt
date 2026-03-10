@@ -11,5 +11,6 @@ interface MasterUserService {
     fun register(req: ReqCreateUserDto): ResCreateUserDto
     fun updateUser(req: ReqUpdateUserDto, userId: Int): ResGetUserDto
     fun softDeleteUser(userId: Int): ResUserIdDto
-    fun getUserById(id: Int): ResGetUserDetailDto
+    fun getUserById(userId: Int): ResGetUserDetailDto
+    fun getAllUsers(): List<ResGetUserDto>
 }

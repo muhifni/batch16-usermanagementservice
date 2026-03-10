@@ -16,6 +16,8 @@ import com.batch16.usermanagementservice.repository.MasterUserRepository
 import com.batch16.usermanagementservice.service.MasterUserService
 import org.slf4j.LoggerFactory
 import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
+import org.springframework.cache.annotation.Caching
 import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -62,19 +64,50 @@ class MasterUserServiceImpl(
         )
     }
 
-    //MENGHAPUS DATA REDIS getUserById::userId
-    @CacheEvict("getUserById", key = "#userId")
+    @Cacheable("getAllUsers")
+    override fun getAllUsers(): List<ResGetUserDto>{
+        return masterUserRepository.findAll().map { user ->
+            ResGetUserDto(
+                userId = user.id!!,
+                email = user.email,
+                fullName = user.fullName,
+                roleName = user.role?.name,
+                age = user.age
+            )
+        }
+    }
+
+    @Cacheable("getUserById", key = "#userId")
+    override fun getUserById(userId: Int): ResGetUserDetailDto {
+        val user = masterUserRepository.findById(userId).orElseThrow {
+            throw DataNotFoundException("User with id $userId not found!")
+        }
+
+        return ResGetUserDetailDto(
+            userId = user.id!!,
+            fullName = user.fullName,
+            email = user.email,
+            age = user.age,
+            roleName = user.role!!.name
+        )
+    }
+
+    //MENGHAPUS DATA REDIS
+    @Caching(evict = [
+        CacheEvict("getUserById", key = "#userId"),
+        CacheEvict("getAllUsers", allEntries = true)
+    ])
     override fun updateUser(req: ReqUpdateUserDto, userId: Int): ResGetUserDto {
         //GET USER BY ID
         val user = masterUserRepository.findById(userId).orElseThrow {
-            log.error("User with id $userId not found!!!")
             println("User with id $userId not found!!!")
             GeneralException(HttpStatus.NOT_FOUND, "User with id $userId not found!!!")
         }
 
+        val hashed = passwordEncoder.encode(req.password)
         //UPDATE ENTITY
         user.email = req.email
-        user.password = req.password
+        user.password = hashed
         user.age = req.age
         user.fullName = req.fullName
 
@@ -90,6 +123,10 @@ class MasterUserServiceImpl(
         )
     }
 
+    @Caching(evict = [
+        CacheEvict("getUserById", key = "#userId"),
+        CacheEvict("getAllUsers", allEntries = true)
+    ])
     override fun softDeleteUser(userId: Int): ResUserIdDto {
         //find user by id di db (query db)
         val user = masterUserRepository.findById(userId).orElseThrow {
@@ -106,19 +143,5 @@ class MasterUserServiceImpl(
         kafkaProducer.sendMessage("BATCH16_DELETE_USER_PRODUCT", user.id!!.toString())
         //return
         return ResUserIdDto(userId)
-    }
-
-    override fun getUserById(id: Int): ResGetUserDetailDto {
-        val user = masterUserRepository.findById(id).orElseThrow {
-            throw DataNotFoundException("User with id $id not found!")
-        }
-
-        return ResGetUserDetailDto(
-            userId = user.id!!,
-            fullName = user.fullName,
-            email = user.email,
-            age = user.age,
-            roleName = user.role!!.name
-        )
     }
 }

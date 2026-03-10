@@ -2,6 +2,7 @@ package com.batch16.usermanagementservice.util;
 
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ class JwtUtil(
             java.time.Instant.now().plusSeconds(expiredIn.toLong())
         )
         // Meng-enkripsi secret-key
-        val signingKey = Keys.hmacShaKeyFor(jwtSecreteKey.toByteArray())
+        val signingKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecreteKey))
         val token = Jwts.builder()  // Mulai membentuk token
             // Isi paylaod dari jwt ini secara default optional
             .setIssuer("Gateway")                   // Untuk yg membuat token

@@ -4,6 +4,7 @@ import com.batch16.usermanagementservice.domain.dto.BaseResponse
 import com.batch16.usermanagementservice.domain.dto.req.ReqLoginDto
 import com.batch16.usermanagementservice.domain.dto.res.ResLoginDto
 import com.batch16.usermanagementservice.exception.DataNotFoundException
+import com.batch16.usermanagementservice.exception.GeneralException
 import com.batch16.usermanagementservice.repository.MasterUserRepository
 import com.batch16.usermanagementservice.service.AuthService
 import com.batch16.usermanagementservice.util.JwtUtil
@@ -27,7 +28,7 @@ class AuthServiceImpl(
 
         // MENCOCOKAN PASSWORD DARI REQUEST DGN PASSWORD USER DI DB
         if (!passwordEncoder.matches(req.password, user.get().password)) {
-            throw DataNotFoundException("Password does not match user ${req.email}")
+            throw GeneralException(HttpStatus.UNAUTHORIZED, "Password does not match user ${req.email}")
         }
 
         // GENERATE TOKEN DENGAN JWT UTIL

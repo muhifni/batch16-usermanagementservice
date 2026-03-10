@@ -9,7 +9,11 @@ import java.sql.Timestamp
 @MappedSuperclass
 abstract class BaseEntity {
     @CreationTimestamp
-    @Column(nullable = false, updatable = false)
+    @Column(
+        nullable = false,
+        updatable = false,
+        columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+    )
     val createdAt: Timestamp? = null
     @Column
     var createdBy: String? = null
@@ -20,7 +24,10 @@ abstract class BaseEntity {
     @Column
     var updatedBy: String? = null
 
-    @Column(nullable = false)
+    @Column(
+        nullable = false,
+        columnDefinition = "BOOLEAN DEFAULT FALSE"
+        )
     var isDelete: Boolean = false
     @Column(nullable = true)
     var deletedAt: Timestamp? = null
