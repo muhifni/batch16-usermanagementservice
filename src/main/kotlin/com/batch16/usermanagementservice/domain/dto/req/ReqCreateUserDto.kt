@@ -7,14 +7,11 @@ import jakarta.validation.constraints.Size
 import org.jetbrains.annotations.NotNull
 
 data class ReqCreateUserDto(
-    @field:NotBlank(
-        message = "email must not be blank"
-    ) // buat penjagaan ""
-//    @field:NotNull(message = "email must not be null or empty") // buat penjagaan -
+    @field:NotBlank(message = "email must not be blank")
     @field:Email(message = "email must be an email")
     val email: String,
-    @field:NotBlank(
-        message = "password must not be blank")
+
+    @field:NotBlank(message = "password must not be blank")
     @field:Size(
         min = 8, max = 10,
         message = "Password must have 8-10 characters long")

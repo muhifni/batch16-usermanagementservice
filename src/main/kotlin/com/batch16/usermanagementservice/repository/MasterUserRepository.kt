@@ -50,5 +50,5 @@ interface MasterUserRepository: JpaRepository<MasterUserEntity, Int> {
        AND mu.is_delete = false
        LIMIT 1  
     """, nativeQuery = true)
-    fun findByEmail(email: String): Optional<MasterUserEntity>
+    fun findByEmail(email: String?): Optional<MasterUserEntity>
 }

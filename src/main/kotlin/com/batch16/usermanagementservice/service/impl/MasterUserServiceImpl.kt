@@ -1,6 +1,5 @@
 package com.batch16.usermanagementservice.service.impl
 
-import com.batch16.usermanagementservice.domain.ConstantVariables
 import com.batch16.usermanagementservice.domain.dto.req.ReqCreateUserDto
 import com.batch16.usermanagementservice.domain.dto.req.ReqUpdateUserDto
 import com.batch16.usermanagementservice.domain.dto.res.ResCreateUserDto

@@ -58,13 +58,13 @@ class UserController(
         )
     }
 
-    @DeleteMapping("/soft-delete/{userId}")
+    @DeleteMapping("/{userId}")
     fun softDelete(
         @PathVariable userId: Int
     ): ResponseEntity<BaseResponse<ResUserIdDto>>{
         return ResponseEntity.ok(
             BaseResponse(
-                message = "Success soft delete user",
+                message = "Success delete user",
                 data = masterUserService.softDeleteUser(userId)
             )
         )

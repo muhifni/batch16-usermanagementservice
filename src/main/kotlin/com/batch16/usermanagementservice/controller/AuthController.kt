@@ -3,7 +3,9 @@ package com.batch16.usermanagementservice.controller
 import com.batch16.usermanagementservice.domain.dto.BaseResponse
 import com.batch16.usermanagementservice.domain.dto.req.ReqLoginDto
 import com.batch16.usermanagementservice.domain.dto.res.ResLoginDto
+import com.batch16.usermanagementservice.exception.BadRequestException
 import com.batch16.usermanagementservice.service.AuthService
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -17,8 +19,9 @@ class AuthController(
 ) {
     @PostMapping("/login")
     fun Login(
-        @RequestBody req: ReqLoginDto
+       @Valid @RequestBody req: ReqLoginDto
     ): ResponseEntity<BaseResponse<ResLoginDto>> {
+        if (req == null) throw BadRequestException("Request body is required")
            return authService.Login(req)
     }
 }

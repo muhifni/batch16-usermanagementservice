@@ -10,15 +10,17 @@ spring:
       time-to-live: 10m
   data:
     redis:
-      host: localhost
-      port: 6380
+      host: 158.178.246.204
+      port: 3009
+      username: default
+      password: CcLqI7gBESGsGfd3wZ7WJwI20kM1AOeMxtVXRg7XfN5QmB2imDNI5gDAIqf8qQzn
   application:
     name: usermanagementservice
   datasource: #CONFIG POSTGRES CONNECTION
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/batch16_user_management
+    url: jdbc:postgresql://158.178.246.204:3006/batch16_user_management
     username: postgres
-    password: admin
+    password: EzeX24QUrUpUU3MabkzocHHRcIZ8cxiaDbbftRI5JQgiF4dPLGoDjyPQp9wK7mCT
   jpa:
     hibernate:
       ddl-auto: update
@@ -28,7 +30,7 @@ spring:
         show_sql: true #munculin query sql di console
 
 kafka:
-  bootstrap-servers: localhost:9092
+  bootstrap-servers: 158.178.246.204:3022
 
 #Ketika aplikasi nyala, report alamat ke http://localhost:8761/eureka/
 eureka:
