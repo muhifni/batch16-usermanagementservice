@@ -74,4 +74,19 @@ class GlobalExceptionHandler {
         )
     }
 
+    @ExceptionHandler(GeneralException::class)
+    fun handleAppException(
+        ex: GeneralException
+    ): ResponseEntity<BaseResponse<Any?>> {
+        return ResponseEntity
+            .status(ex.httpStatus)
+            .body(
+                BaseResponse(
+                    message = ex.message,
+                    status = ex.httpStatus.value(),
+                    success = false
+                )
+            )
+    }
+
 }

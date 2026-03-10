@@ -9,14 +9,17 @@ import com.batch16.usermanagementservice.domain.dto.res.ResUserIdDto
 import com.batch16.usermanagementservice.domain.entity.MasterUserEntity
 import com.batch16.usermanagementservice.exception.BadRequestException
 import com.batch16.usermanagementservice.exception.DataNotFoundException
+import com.batch16.usermanagementservice.exception.GeneralException
 import com.batch16.usermanagementservice.producer.KafkaProducer
 import com.batch16.usermanagementservice.repository.MasterRoleRepository
 import com.batch16.usermanagementservice.repository.MasterUserRepository
 import com.batch16.usermanagementservice.service.MasterUserService
 import org.slf4j.LoggerFactory
 import org.springframework.cache.annotation.CacheEvict
+import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.sql.Timestamp
 
 @Service
 class MasterUserServiceImpl(
@@ -28,19 +31,18 @@ class MasterUserServiceImpl(
     val log = LoggerFactory.getLogger(MasterUserServiceImpl::class.java)
     override fun register(req: ReqCreateUserDto): ResCreateUserDto {
         //LOGIKA API
-
         //ENHANCE -> KETIKA CREATE USER NAMBAH ROLE ID "USER"
 
         val registeredEmail = masterUserRepository.findByEmail(req.email)
         //cek registered email ada atau tidak
         if(registeredEmail.isPresent){ //jika ada throw error
-            throw BadRequestException("Email ${req.email} already exists")
+            throw GeneralException(HttpStatus.CONFLICT, "Email ${req.email} already exists")
         }
         //email belum terdaftar lanjut ke business proses berikutnya
 
         //GET ROLE BY NAME
         val userRole = masterRoleRepository.findRoleByName("user").orElseThrow {
-            throw RuntimeException("Role user not found")
+            throw GeneralException(HttpStatus.NOT_FOUND, "Role user not found")
         }
 
         val hashed = passwordEncoder.encode(req.password)
@@ -67,7 +69,7 @@ class MasterUserServiceImpl(
         val user = masterUserRepository.findById(userId).orElseThrow {
             log.error("User with id $userId not found!!!")
             println("User with id $userId not found!!!")
-            RuntimeException("User with id $userId not found!!!")
+            GeneralException(HttpStatus.NOT_FOUND, "User with id $userId not found!!!")
         }
 
         //UPDATE ENTITY
@@ -91,10 +93,13 @@ class MasterUserServiceImpl(
     override fun softDeleteUser(userId: Int): ResUserIdDto {
         //find user by id di db (query db)
         val user = masterUserRepository.findById(userId).orElseThrow {
-            RuntimeException("User with id $userId not found!!!")
+            GeneralException(HttpStatus.NOT_FOUND, "User with id $userId not found!!!")
         } // -> local variabel di springboot
         //set data is_delete = false
         user.isDelete = true
+        user.deletedAt = Timestamp(System.currentTimeMillis())
+        user.deletedBy = user.id
+
         //save updated data user di db
         masterUserRepository.save(user)
         //send message to Kafka

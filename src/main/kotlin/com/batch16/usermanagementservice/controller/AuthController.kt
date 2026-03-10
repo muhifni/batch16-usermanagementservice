@@ -21,7 +21,7 @@ class AuthController(
     fun Login(
        @Valid @RequestBody req: ReqLoginDto
     ): ResponseEntity<BaseResponse<ResLoginDto>> {
-        if (req == null) throw BadRequestException("Request body is required")
+//        if (req == null) throw BadRequestException("Request body is required")
            return authService.Login(req)
     }
 }

@@ -13,30 +13,16 @@ data class MasterUserEntity(
     var id: Int? = null, //int
 
     @Column
-    var email: String, //generate/create column "email varchar(255)",
+    var email: String?, //generate/create column "email varchar(255)",
 
     @Column(name = "full_name")
-    var fullName: String, //create column fullname varchar(255)
+    var fullName: String?, //create column fullname varchar(255)
 
     @Column
     var password: String,
 
     @Column(nullable = true)
     var age: Int? = null,
-
-    @CreationTimestamp
-    @Column(nullable = false)
-    val createdAt: Timestamp? = null,
-
-    @Column
-    val createdBy: String = "SYSTEM",
-
-    @UpdateTimestamp
-    @Column(nullable = false)
-    val updatedAt: Timestamp? = null,
-
-    @Column(nullable = false)
-    var isDelete: Boolean = false,
 
     //user berelasi many to one ke role
     //1 role bisa dipakai banyak user
@@ -45,4 +31,4 @@ data class MasterUserEntity(
     //relasi di representasikan oleh kolom role_id
     @JoinColumn(name = "role_id", nullable = true)
     var role: MasterRoleEntity? = null
-)
+): BaseEntity()

@@ -7,12 +7,10 @@ import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 
 data class ReqLoginDto(
-    @field:NotNull(message = "email is required")
-    @field:NotBlank(message = "email must not be blank")
+    @field:NotBlank(message = "email is required")
     @field:Email(message = "email must be an email")
     val email: String?,
 
-    @field:NotNull(message = "password is required")
-    @field:NotBlank(message = "password must not be blank")
+    @field:NotBlank(message = "password is required")
     val password: String?
 )

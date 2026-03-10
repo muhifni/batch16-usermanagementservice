@@ -11,4 +11,4 @@ data class MasterRoleEntity(
 
     @Column
     var name: String
-)
+): BaseEntity()
